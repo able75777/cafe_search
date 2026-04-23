@@ -630,9 +630,9 @@ async function scrapeNaverCafeAPI(cafeName, cafeId, gameName, dateFrom, dateTo, 
       for (const item of (data.items || [])) {
         if (seen.has(item.link)) continue;
         seen.add(item.link);
+        // 네이버 카페 검색 API는 postdate를 제공하지 않으므로 날짜 필터 스킵
         const pd = String(item.postdate || '');
-        const dateStr = pd.length === 8 ? `${pd.slice(0,4)}-${pd.slice(4,6)}-${pd.slice(6,8)}` : '';
-        if (!dateStr || dateStr < dateFrom || dateStr > dateTo) continue;
+        const dateStr = pd.length === 8 ? `${pd.slice(0,4)}-${pd.slice(4,6)}-${pd.slice(6,8)}` : today();
         const clean = s => s.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
         posts.push({ title: clean(item.title||''), url: item.link||'', date: dateStr, views:'0',
           source: `네이버카페(${cafeName})`, game: gameName, body: clean(item.description||''), images:[] });
